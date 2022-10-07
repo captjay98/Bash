@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:vbernat/haproxy-2.5
+sudo apt update
+sudo apt install haproxy
+sudo cp -a /etc/haproxy/haproxy.cfg{,.orig}
+
+config='\n
+frontend haproxy-main
+    \tbind *:80
+    \tmode http
+    \toption forwardfor
+    \tdefault_backend my_webservers
+
+backend my_webservers
+    \tbalance roundrobin
+    \tserver websever1	0.0.0.0:80 check
+    \tserver websever2	0.0.0.0:80 check
+'
