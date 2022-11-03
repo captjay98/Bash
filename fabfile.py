@@ -26,16 +26,16 @@ def serverstatus():
 @roles('webervers')
 def restartServer():
     run(' sudo service nginx restart')
+    print(red('Server Restarted'))
 
-
-@roles('loadbalancrs')
+@roles('loadbalancers')
 def lbstatus():
     sudo('service haproxy status')
 
 @hosts(webs)
 def movefile():
-    pdirname = prompt("Enter path of file to move")
-    ndirname = prompt("Enter path to move file to")
+    pdirname = prompt("Enter path of file to move:- ")
+    ndirname = prompt("Enter path to move file to:- ")
     with cd('ndirname'):
         req = put(pdirname, ndirname)
     print(req.succeeded)
@@ -43,8 +43,8 @@ def movefile():
 
 @hosts(webs)
 def download():
-    rdirname = prompt('Enter path of file you want to download')
-    ldirname = prompt("Enter where you want to put it")
+    rdirname = prompt('Enter path of file you want to download:- ')
+    ldirname = prompt("Enter where you want to put it:- ")
     with lcd('ldirname'):
         req = get(rdirname, ldirname)
     print(req.succeeded)
@@ -52,7 +52,7 @@ def download():
 
 @hosts(webs, webss)
 def makedir():
-    dir = prompt('enter path to create Dir')
+    dir = prompt('enter path to create Dir:- ')
     with cd(dir):
         sudo('mkdir play')
 
@@ -67,5 +67,22 @@ def search():
 
 @roles('webservers')
 def getWebLog():
-    dir = prompt("Enter path to sav file too")
+    dir = prompt("Enter path to save file to:-")
     get('/var/log/nginx/access.log', dir)
+
+def startDjango():
+    path = prompt("Enter path to start project")
+    with lcd(path):
+        env = prompt("Enter environment name")
+        run(f"python3 -m venv {env}")
+        run(f"source {env}/bin/activate")
+
+    ppath = prompt("Enter path to create project")
+    with lcd(path):
+        pname = prompt("Enter project name")
+        run(f"django-admin startproject {pname}")
+
+    apath = prompt("Enter path to create app")
+    with lcd(apath):
+        aname = prompt("Enter app name")
+        run(f"Python3 manage.py startapp {aname}")
